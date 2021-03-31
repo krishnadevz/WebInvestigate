@@ -1,0 +1,34 @@
+import React, { useEffect, useState } from 'react'
+
+export default function Home() {
+const [State, setState] = useState("");
+
+useEffect(() => {
+    fetch("https://lighthouse-dot-webdotdevsite.appspot.com//lh/newaudit", {
+      method: "POST",
+      body: JSON.stringify({
+      "url": "https://piyushsthr.netlify.app",
+      "replace": true,
+      "save": false
+    }),
+      headers: {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      credentials: "same-origin"
+    })
+     .then(res => res.json()) // this is the line you need
+     .then(function(data) {
+  
+      setState(data.lhrSlim[0].score);
+
+    }).catch(function(error) {
+      // eslint-disable-next-line no-unused-expressions
+      error.message
+    })
+  }, )
+  return (
+    <div>
+      <h1>{State}</h1>
+    </div>
+  )
+}
