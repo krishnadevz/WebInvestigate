@@ -16,12 +16,12 @@ export default function Home() {
       body: JSON.stringify({
         url: url,
         replace: true,
-        save: false
+        save: false,
       }),
       headers: {
-        "Content-Type": "application/json; charset=utf-8"
+        "Content-Type": "application/json; charset=utf-8",
       },
-      credentials: "same-origin"
+      credentials: "same-origin",
     })
       .then((res) => res.json()) // this is the line you need
       .then(function (data) {
@@ -69,7 +69,14 @@ export default function Home() {
           </Button>
         </Form>
       </Container>
-      {isLoading ? <h2>Accessibility of your website is Loading...</h2> : <h2>{State}</h2>}
+      <center>
+        {" "}
+        {isLoading ? (
+          <h2>Accessibility of your website is Loading...</h2>
+        ) : (
+         <h2> <span class="badge rounded-pill bg-warning text-dark">{State}</span></h2>
+        )}
+      </center>{" "}
     </div>
   );
 }
