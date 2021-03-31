@@ -8,7 +8,7 @@ export default function Home() {
   //if you don't need to fetch data when component is mount you can remove all the useEffect
   useEffect(() => {
     onFetch("https://krishnadevz.github.io/");
-  }, []); //passing a empty array told useEffect to be play only at the component did mount state
+  }, []); //passing a empty array told useEffect to be play only at the component did mount states
   const onFetch = (url) => {
     setIsLoading(true);
     fetch("https://lighthouse-dot-webdotdevsite.appspot.com//lh/newaudit", {
