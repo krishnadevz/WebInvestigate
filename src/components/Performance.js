@@ -1,20 +1,13 @@
-import React, { useEffect, useState, useRef } from "react";
-import { Container, Button, Form, FormControl } from "react-bootstrap";
-export default function Home() {
-  const [State, setState] = useState("");
-  const ref = useRef(0); // add a ref to remove value from input when fetch is finish
-  const [userUrl, setUserUrl] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  //if you don't need to fetch data when component is mount you can remove all the useEffect
-  useEffect(() => {
-    onFetch("https://krishnadevz.github.io/");
-  }, []); //passing a empty array told useEffect to be play only at the component did mount state
-  const onFetch = (url) => {
-    setIsLoading(true);
-    fetch("https://lighthouse-dot-webdotdevsite.appspot.com//lh/newaudit", {
+import { useState, useEffect } from "react";
+import { Button, Form } from "react-bootstrap";
+import "./style.css";
+function fetchScore(url) {
+  return fetch(
+    "https://lighthouse-dot-webdotdevsite.appspot.com//lh/newaudit",
+    {
       method: "POST",
       body: JSON.stringify({
-        url: url,
+        url,
         replace: true,
         save: false
       }),
@@ -22,54 +15,92 @@ export default function Home() {
         "Content-Type": "application/json; charset=utf-8"
       },
       credentials: "same-origin"
-    })
-      .then((res) => res.json()) // this is the line you need
-      .then(function (data) {
-        console.log(data);
-        setState(data.lhrSlim[2].score);
-      })
-      .catch(function (error) {
-        // eslint-disable-next-line no-unused-expressions
-        error.message;
-      })
-      .finally((_) => {
-        setIsLoading(false);
-        ref.current.value = "";
-      });
-  };
+    }
+  )
+    .then((res) => res.json()) // this is the line you need
+    .then((data) => data.lhrSlim[2].score)
+    .catch(function (error) {
+      console.log(error);
+
+      // eslint-disable-next-line no-unused-expressions
+      error.message;
+    });
+}
+
+export default function Home() {
+  const [score, setScore] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [url, setUrl] = useState("");
+
+ /*  useEffect(() => {
+    setLoading(true);
+    fetchScore("https://piyushsthr.netlify.app")
+      .then(setScore)
+      .then(() => setLoading(false));
+  }, []); */
   return (
-    <div>
-      <Container>
-        <h1>
+    <>
+    <div className="App">
+ <h1>
           Enter Your website URL
           <span role="img" aria-label="ufo">
             🛸
           </span>
         </h1>
-        <Form
-          onSubmit={() => {
-            onFetch(userUrl);
-          }}
-        >
-          <FormControl
-            ref={ref}
-            type="text"
-            placeholder="Search"
-            className="mr-sm-2"
-            name="query"
-            onChange={(e) => {
-              setUserUrl(e.target.value);
-            }}
-          />
-          <Button>
-            Search
-            <span role="img" aria-label="search-icon">
-              🔍
-            </span>
-          </Button>
-        </Form>
-      </Container>
-      {isLoading ? <h2>Performance of your website is Loading...</h2> : <h2>{State}</h2>}
-    </div>
-  );
-}
+      <Form 
+        onSubmit={(evt) => {
+          evt.preventDefault();
+          setLoading(true);
+          fetchScore(url)
+            .then(setScore)
+            .then(() => setUrl(""))
+            .then(() => setLoading(false));
+        }}
+      >
+        <input
+          value={url}
+          onChange={(evt) => setUrl(evt.target.value)}
+          placeholder="Url here"
+        />
+        <button>Submit</button>
+      </Form>
+      {loading ? <h1>loading...</h1> : 
+     <h1> <span class="badge rounded-pill bg-success text-dark">{score}</span></h1>}
+      </div>
+
+      <div class="list-group">
+   <a href="https://www.altexsoft.com/blog/engineering/12-techniques-of-website-speed-optimization-performance-testing-and-improvement-practices/" class="list-group-item list-group-item-action active" aria-current="true">
+     <div class="d-flex w-100 justify-content-between">
+       <h5 class="mb-1">Remove unused CSS</h5>
+       <small>Few minutes ago</small>
+     </div>
+     <p class="mb-1">Use a Content Delivery Network (CDN).</p>
+     <small>Move your website to a better host 
+     Shared hosting
+     Virtual Private Servers (VPS) hosting
+     Dedicated server
+ .</small>
+   </a>
+   <a href="https://www.altexsoft.com/blog/engineering/12-techniques-of-website-speed-optimization-performance-testing-and-improvement-practices/" class="list-group-item list-group-item-action">
+     <div class="d-flex w-100 justify-content-between">
+       <h5 class="mb-1">Optimize the size of images on your website</h5>
+       <small class="text-muted">Few minutes ago</small>
+     </div>
+     <p class="mb-1">Reduce the number of plugins
+
+ Plugins are common components of each website.</p>
+     <small class="text-muted">They add specific features suggested by third parties.</small>
+   </a>
+   <a href="https://www.altexsoft.com/blog/engineering/12-techniques-of-website-speed-optimization-performance-testing-and-improvement-practices/" class="list-group-item list-group-item-action">
+     <div class="d-flex w-100 justify-content-between">
+       <h5 class="mb-1">Use website caching</h5>
+       <small class="text-muted">3 days ago</small>
+     </div>
+     <p class="mb-1">In case there are a lot of users accessing the page at one time servers work slowly and need more time to deliver the web page to each user. </p>
+     <small class="text-muted">Reduce the use of web fonts it affects on the speed of the website.</small>
+   </a>
+ </div>
+     </>
+     
+   );
+ }
