@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
-import { Button, Form } from "react-bootstrap";
-import RetroHitCounter from "react-retro-hit-counter";
-import "./style.css";
+import React, { useState } from "react"
+import { Card, Button, Alert,Form } from "react-bootstrap"
+import { useAuth } from "../contexts/AuthContext"
+import { Link, useHistory } from "react-router-dom";
 function fetchScore(url) {
   return fetch(
     "https://lighthouse-dot-webdotdevsite.appspot.com//lh/newaudit",
@@ -27,22 +27,29 @@ function fetchScore(url) {
       error.message;
     });
 }
-
-export default function Home() {
+export default function Dashboard() {
+  const [error, setError] = useState("")
+  const { currentUser, logout } = useAuth()
+  const history = useHistory()
   const [score, setScore] = useState([]);
   const [loading, setLoading] = useState(false);
   const [url, setUrl] = useState("");
 
-  /*  useEffect(() => {
-    setLoading(true);
-    fetchScore("https://piyushsthr.netlify.app")
-      .then(setScore)
-      .then(() => setLoading(false));
-  }, []); */
+  async function handleLogout() {
+    setError("")
+
+    try {
+      await logout()
+      history.push("/login")
+    } catch {
+      setError("Failed to log out")
+    }
+  }
+
   return (
     <>
-      <div className="App">
-        <h1>
+    <div className="App">
+        <center><h1>
           Enter Your website URL
           <span role="img" aria-label="ufo">
             🛸
@@ -64,7 +71,7 @@ export default function Home() {
             placeholder="Url here"
           />
           <button>Submit</button>
-        </Form>
+        </Form></center>
         {loading ? (
           <h1>loading...</h1>
         ) : (
@@ -122,25 +129,21 @@ export default function Home() {
           </small>
         </a>
       </div>
-      <center>
-        <RetroHitCounter
-          hits={10}
-          /* The following are all default values: */
-          withBorder={true}
-          withGlow={false}
-          minLength={4}
-          size={40}
-          padding={4}
-          digitSpacing={3}
-          segmentThickness={4}
-          segmentSpacing={0.5}
-          segmentActiveColor="#76FF03"
-          segmentInactiveColor="#315324"
-          backgroundColor="#222222"
-          borderThickness={7}
-          glowStrength={0.5}
-        />
-      </center>
+      
+    
+          <h2 className="text-center mt-10">WebTest🔍</h2>
+          {error && <Alert variant="danger">{error}</Alert>}
+          <strong>Current User:</strong> {currentUser.email}
+          <Link to="/update-profile" className="btn btn-primary w-100 text-center mt-2">
+            Update Profile
+          </Link>
+       
+      <div className="w-80 text-center mt-2">
+        <Button type="button" className="btn btn-danger" onClick={handleLogout}>
+          Log Out
+        </Button>
+      </div>
     </>
-  );
+  )
 }
+

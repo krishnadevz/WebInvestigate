@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Button, Form } from "react-bootstrap";
-import "./style.css";
 function fetchScore(url) {
   return fetch(
     "https://lighthouse-dot-webdotdevsite.appspot.com//lh/newaudit",
@@ -41,7 +40,7 @@ export default function Home() {
   return (
     <>
     <div className="App">
- <h1>
+    <center><h1>
           Enter Your website URL
           <span role="img" aria-label="ufo">
             🛸
@@ -63,7 +62,7 @@ export default function Home() {
           placeholder="Url here"
         />
         <button>Submit</button>
-      </Form>
+      </Form> </center>
       {loading ? <h1>loading...</h1> : 
      <h1> <span class="badge rounded-pill bg-danger text-dark">{score}</span></h1>}
       </div>
